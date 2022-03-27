@@ -1,0 +1,14 @@
+{
+    "name": "utilitte/console",
+    "require": {
+        "php": ">= 8.1",
+        "phpstan/phpstan": "^1.5",
+        "nette/utils": "^3.2",
+        "utilitte/asserts": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Utilitte\\Console\\": "src"
+        }
+    }
+}
