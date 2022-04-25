@@ -2,7 +2,7 @@
 
 namespace Utilitte\Console;
 
-use LogicException;
+use InvalidArgumentException;
 
 final class Git
 {
@@ -11,17 +11,20 @@ final class Git
 		private string $directory,
 	)
 	{
+		$this->directory = rtrim($this->directory, '/');
+		
+		if (!self::isGitDirectory($this->directory)) {
+			throw new InvalidArgumentException(sprintf('Directory %s is not a git directory.', $this->directory));
+		}
 	}
 
-	public function isGitDirectory(): bool
+	public static function isGitDirectory(string $directory): bool
 	{
-		return is_dir($this->directory . '/.git');
+		return is_dir(rtrim($directory, '/') . '/.git');
 	}
 
 	public function hasUncommittedFiles(): bool
 	{
-		$this->validate();
-
 		return (bool) $this->command('git status -s');
 	}
 
@@ -35,8 +38,6 @@ final class Git
 
 	public function hasUnpushedCommits(): bool
 	{
-		$this->validate();
-
 		$return = $this->command('git status -s -b');
 
 		return str_contains($return[0], '[ahead');
@@ -48,13 +49,6 @@ final class Git
 	private function command(string $command): array
 	{
 		return CommandLine::command(sprintf('cd "%s" && %s', $this->directory, $command), true);
-	}
-
-	private function validate(): void
-	{
-		if (!$this->isGitDirectory()) {
-			throw new LogicException(sprintf('Directory %s, is not a git directory.', $this->directory));
-		}
 	}
 
 }

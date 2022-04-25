@@ -11,6 +11,7 @@ final class Composer
 		private string $directory,
 	)
 	{
+		$this->directory = rtrim($this->directory, '/');
 		$file = $this->directory . '/composer.json';
 
 		if (!file_exists($file)) {
@@ -21,6 +22,16 @@ final class Composer
 	public function update(): void
 	{
 		CommandLine::passthru('composer update', $this->directory);
+	}
+
+	public function install(): void
+	{
+		CommandLine::passthru('composer install', $this->directory);
+	}
+
+	public static function isComposerDirectory(string $directory): bool
+	{
+		return file_exists($directory . '/composer.json');
 	}
 
 }
