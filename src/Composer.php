@@ -19,6 +19,15 @@ final class Composer
 		}
 	}
 
+	public static function tryCreate(string $directory): ?self
+	{
+		if (self::isComposerDirectory($directory)) {
+			return new self($directory);
+		}
+
+		return null;
+	}
+
 	public function update(): void
 	{
 		CommandLine::passthru('composer update', $this->directory);
